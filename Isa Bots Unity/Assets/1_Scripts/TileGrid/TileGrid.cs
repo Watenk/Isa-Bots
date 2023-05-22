@@ -134,6 +134,8 @@ public class TileGrid : BaseClass
             }
         }
 
+        //Clear Starter Area
+        SetTiles(new Vector2Int(0, 0), new Vector2Int(10, 10), MainID.none, GroundID.dirt, 0);
     }
 
     private int GetPerlinGround(float x, float y, GroundID[] generationTiles)

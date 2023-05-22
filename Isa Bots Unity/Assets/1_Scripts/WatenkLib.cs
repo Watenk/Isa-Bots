@@ -24,8 +24,9 @@ public class WatenkLib
 
 public class FSM
 {
-    Dictionary<System.Type, BaseState> StatesDictionary = new Dictionary<System.Type, BaseState>(); // Dictionary for States - String is the key
     public BaseState currentState;
+    
+    private Dictionary<System.Type, BaseState> StatesDictionary = new Dictionary<System.Type, BaseState>(); // Dictionary for States - String is the key
 
     public FSM(params BaseState[] states)
     {
@@ -42,20 +43,16 @@ public class FSM
         currentState?.OnStart();
     }
 
-    public void OnUpdate()
+    public void OnUPS()
     {
-        currentState?.OnUpdate();
-    }
-
-    public void OnExit()
-    {
-        currentState?.OnExit();
+        currentState?.OnUPS();
     }
 }
 
 public abstract class BaseState : MonoBehaviour
 {
     protected FSM owner;
+
     public void SetOwner(FSM owner)
     {
         this.owner = owner;
@@ -65,6 +62,6 @@ public abstract class BaseState : MonoBehaviour
 
     }
     public abstract void OnStart();
-    public abstract void OnUpdate();
+    public abstract void OnUPS();
     public abstract void OnExit();
 }

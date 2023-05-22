@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public float UPS; //UPS
     public List<BaseClass> UpdateOrder = new List<BaseClass>();
 
-    public float UPS; //UPS
     private float upsTimer;
 
     private void Awake()
