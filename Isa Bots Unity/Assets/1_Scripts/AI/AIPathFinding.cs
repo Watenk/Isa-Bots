@@ -4,14 +4,17 @@ using UnityEngine;
 
 public abstract class AIPathFinding : BaseState
 {
-    private Tile startTile;
-    private Tile targetTile;
-    private AStar aStar = new AStar();
-    private List<Tile> path;
-    private int pathIndex = 0;
+    public List<MainID> allowedMainTiles;
+    public List<GroundID> allowedGroundTiles;
+
+    protected Tile startTile;
+    protected Tile targetTile;
+    protected AStar aStar = new AStar();
+    protected List<Tile> path;
+    protected int pathIndex = 0;
 
     //References 
-    private Robot robot;
+    protected Robot robot;
 
     public override void OnStart()
     {
@@ -45,35 +48,35 @@ public abstract class AIPathFinding : BaseState
         }
         else
         {
-            TaskSuccess();
+            LocationReached();
         }
     }
 
-    private void CalcTiles()
+    protected virtual void CalcTiles()
     {
         startTile = robot.tileGrid.GetTile(robot.robot.Pos);
         targetTile = robot.tileGrid.GetTile(robot.currentTask.Pos);
     }
 
-    private void CalcPath()
+    protected virtual void CalcPath()
     {
-        path = aStar.CalcPath(startTile, targetTile, robot.tileGrid, robot.currentTask.allowedMainTiles, robot.currentTask.allowedGroundTiles);
+        path = aStar.CalcPath(startTile, targetTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
     }
 
-    private void TaskSuccess()
+    protected virtual void LocationReached()
     {
         ClearValues();
         owner.SwitchState(typeof(RobotWaitState));
     }
 
-    private void TaskFailed()
+    protected void TaskFailed()
     {
         Debug.Log("Task failed");
         ClearValues();
         robot.TaskFailed(robot.currentTask);
     }
 
-    private void ClearValues()
+    protected void ClearValues()
     {
         startTile = null;
         targetTile = null;

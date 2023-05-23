@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Robot : BaseClass
 {
-    public BaseState currentState;
-    public Task currentTask { get; set; }
-    public Vector2Int Pos { get; set; }
+    public Vector2Int Pos;
+    public Task currentTask;
 
     //References
     public Robot robot { get; set; }
@@ -38,7 +37,6 @@ public class Robot : BaseClass
     public void SetPos(Vector2Int newPos)
     {
         Pos = newPos;
-        gameObject.transform.position = new Vector3(newPos.x, -newPos.y, -5);
     }
 
     public void ChooseTask()
@@ -74,6 +72,5 @@ public class Robot : BaseClass
     private void UpdateFSM()
     {
         robotState.OnUPS();
-        currentState = robotState.currentState;
     }
 }

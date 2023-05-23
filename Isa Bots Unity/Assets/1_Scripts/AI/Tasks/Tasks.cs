@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class Tasks : BaseClass
 {
-    private List<Task> taskList = new List<Task>();
-
-    public override void OnStart()
-    {
-        AddTask(new Task(TaskActivity.move, new Vector2Int(5, 5)));
-        AddTask(new Task(TaskActivity.mine, new Vector2Int(11, 10)));
-    }
+    public List<Task> taskList = new List<Task>();
 
     public Task GetTask()
     {

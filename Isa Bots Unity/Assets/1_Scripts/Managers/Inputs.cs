@@ -13,30 +13,33 @@ public class Inputs : BaseClass
 
     //references
     private InputManager inputManager;
-    private GameManager gameManager;
+    private TileGrid tileGrid;
+    private Tasks tasks;
 
     public override void OnAwake()
     {
         inputManager = FindObjectOfType<InputManager>();
-        gameManager = FindObjectOfType<GameManager>();
+        tileGrid = FindObjectOfType<TileGrid>();
+        tasks = FindObjectOfType<Tasks>();
     }
 
     public override void OnUpdate()
     {
         Camera();
+        MouseInput();
         //Overlays();
     }
 
     private void Camera()
     {
         //Mouse
-        if (inputManager.MiddleMouseDown == true)
+        if (inputManager.MiddleMouseDown)
         {
             referenceMousePos = Input.mousePosition;
             referenceMousePos = UnityEngine.Camera.main.ScreenToWorldPoint(referenceMousePos);
         }
 
-        if (inputManager.MiddleMouse == true)
+        if (inputManager.MiddleMouse)
         {
             //Get mousepos and calc newPos
             Vector2 currentMousePos = Input.mousePosition;
@@ -61,6 +64,35 @@ public class Inputs : BaseClass
         if (inputManager.ScrollMouseDelta < 0f && UnityEngine.Camera.main.orthographicSize < maxCamSize && Input.GetMouseButton(2) == false)
         {
             UnityEngine.Camera.main.orthographicSize += UnityEngine.Camera.main.orthographicSize * ScrollSpeed * 0.01f;
+        }
+    }
+
+    private void MouseInput()
+    {
+        if (inputManager.LeftMouseDown)
+        {
+            if (tileGrid.IsInGridBounds(inputManager.mousePosGrid))
+            {
+                Tile currentTile = tileGrid.GetTile(inputManager.mousePosGrid);
+                
+                if (currentTile.MainID != MainID.none)
+                {
+                    tasks.AddTask(new Task(TaskActivity.mine, currentTile.Pos));
+                }
+            }
+        }
+
+        if (inputManager.RightMouseDown)
+        {
+            if (tileGrid.IsInGridBounds(inputManager.mousePosGrid))
+            {
+                Tile currentTile = tileGrid.GetTile(inputManager.mousePosGrid);
+
+                if (currentTile.MainID == MainID.none)
+                {
+                    tasks.AddTask(new Task(TaskActivity.move, currentTile.Pos));
+                }
+            }
         }
     }
 
