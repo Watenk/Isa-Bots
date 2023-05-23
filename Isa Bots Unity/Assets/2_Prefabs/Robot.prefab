@@ -53,6 +53,7 @@ MonoBehaviour:
   currentTask:
     TaskActivity: 0
     Pos: {x: 0, y: 0}
+  GoBackToHomeAfterNoTask: 3
 --- !u!114 &1952811424965934452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81f3f40adbd5534b9ce541b23258193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitAmount: 25
+  waitAmount: 5
 --- !u!114 &1952811424965934453
 MonoBehaviour:
   m_ObjectHideFlags: 0

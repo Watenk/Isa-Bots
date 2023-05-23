@@ -7,6 +7,8 @@ public enum MainID
     none,
     stone,
     ironOre,
+    stoneWall,
+    tree,
 }
 
 public enum GroundID 

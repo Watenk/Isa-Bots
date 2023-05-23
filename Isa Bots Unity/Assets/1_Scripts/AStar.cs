@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 //A self-written attempt at AStar
+//It takes some weird routes?? need to fix that
 
 public class AStar
 {
@@ -16,23 +17,26 @@ public class AStar
     private List<Tile> pendingTiles = new List<Tile>();
     private List<Tile> path = new List<Tile>(); //List of tiles with fastest path
 
-    //References
     private TileGrid tileGrid;
 
     public List<Tile> CalcPath(Tile startTile, Tile targetTile, TileGrid tileGrid, List<MainID> allowedMainTiles, List<GroundID> allowedGroundTiles)
     {
-        //Set values
+        //(Re)Set values
+        Tile currentTile = startTile;
         this.startTile = startTile;
         this.targetTile = targetTile;
         this.tileGrid = tileGrid;
         this.allowedMainTiles = allowedMainTiles;
         this.allowedGroundTiles = allowedGroundTiles;
-        Tile currentTile = startTile;
+        fCost.Clear();
+        parent.Clear();
+        pendingTiles.Clear();
+        path.Clear();
 
         //Calc all lowest fCosts until targetTile
         while (currentTile != targetTile)
         {
-            CalcSurroundingTiles(currentTile, tileGrid);
+            CalcSurroundingTiles(currentTile);
             currentTile = GetLowestPending();
             if (currentTile == null) { return null; } //Return null if cant reach target
         }
@@ -49,7 +53,7 @@ public class AStar
         return path;
     }
 
-    private void CalcSurroundingTiles(Tile currentTile, TileGrid tileGrid)
+    private void CalcSurroundingTiles(Tile currentTile)
     {
         Vector2Int currentTilePos = currentTile.Pos;
         //up
@@ -71,12 +75,12 @@ public class AStar
         pendingTiles.Remove(currentTile);
     }
 
-    private void CalcTileCost(Tile currentTile, Tile parentTile)
+    private void CalcTileCost(Tile directionTile, Tile parentTile)
     {
-        if (currentTile == null) return;
-        if (!fCost.ContainsKey(currentTile) && allowedMainTiles.Contains(currentTile.MainID) && allowedGroundTiles.Contains(currentTile.GroundID)) //if value is not calculated & isWalkable
+        if (directionTile == null) return;
+        if (!fCost.ContainsKey(directionTile) && allowedMainTiles.Contains(directionTile.MainID) && allowedGroundTiles.Contains(directionTile.GroundID)) //if value is not calculated & isWalkable
         {
-            Vector2Int currentTilePos = currentTile.Pos;
+            Vector2Int currentTilePos = directionTile.Pos;
             Vector2Int startTilePos = startTile.Pos;
             Vector2Int targetTilePos = targetTile.Pos;
 
@@ -93,9 +97,9 @@ public class AStar
             //CalcFCost
             int fCostInt = gCostInt + hCostInt;
 
-            fCost.Add(currentTile, fCostInt);
-            parent.Add(currentTile, parentTile);
-            pendingTiles.Add(currentTile);
+            fCost.Add(directionTile, fCostInt);
+            parent.Add(directionTile, parentTile);
+            pendingTiles.Add(directionTile);
         }
     }
 

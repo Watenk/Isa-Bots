@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RobotMineState : AIPathFinding
@@ -13,7 +14,7 @@ public class RobotMineState : AIPathFinding
 
     protected void Mine()
     {
-        robot.tileGrid.SetTile(targetTile.Pos, MainID.none, targetTile.GroundID, targetTile.Temp);
+        robot.tileGrid.SetTile(targetTile.Pos, MainID.none, targetTile.GroundID, targetTile.Temp, true);
     }
 
     protected override void CalcPath()
@@ -30,22 +31,22 @@ public class RobotMineState : AIPathFinding
 
             if (direction == 0) //up
             {
-                path = aStar.CalcPath(robot.tileGrid.GetTile(new Vector2Int(robot.Pos.x, robot.Pos.y - 1)), targetTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+                path = aStar.CalcPath(startTile, robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y - 1)), robot.tileGrid, allowedMainTiles, allowedGroundTiles);
                 directions.Remove(direction);
             }
             else if (direction == 1) //Right
             {
-                path = aStar.CalcPath(robot.tileGrid.GetTile(new Vector2Int(robot.Pos.x + 1, robot.Pos.y)), targetTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+                path = aStar.CalcPath(startTile, robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x + 1, targetTile.Pos.y)), robot.tileGrid, allowedMainTiles, allowedGroundTiles);
                 directions.Remove(direction);
             }
             else if (direction == 2) //Down
             {
-                path = aStar.CalcPath(robot.tileGrid.GetTile(new Vector2Int(robot.Pos.x, robot.Pos.y + 1)), targetTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+                path = aStar.CalcPath(startTile, robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y + 1)), robot.tileGrid, allowedMainTiles, allowedGroundTiles);
                 directions.Remove(direction);
             }
             else if (direction == 3) //Left
             {
-                path = aStar.CalcPath(robot.tileGrid.GetTile(new Vector2Int(robot.Pos.x - 1, robot.Pos.y)), targetTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+                path = aStar.CalcPath(startTile, robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x - 1, targetTile.Pos.y)), robot.tileGrid, allowedMainTiles, allowedGroundTiles);
                 directions.Remove(direction);
             }
 
@@ -53,11 +54,6 @@ public class RobotMineState : AIPathFinding
             {
                 directions.Clear();
             }
-        }
-
-        if (path == null)
-        {
-            Debug.Log("No room around tile");
         }
     }
 }

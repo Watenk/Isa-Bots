@@ -14,7 +14,7 @@ public class UI : BaseClass
     public Text MouseGroundID;
     public Text MouseTemp;
 
-    private int frameRateFrameAmount = 20;
+    private int frameRateFrameAmount = 30;
     private int averageFPS;
     private int lowestFrame;
     private float[] frames;

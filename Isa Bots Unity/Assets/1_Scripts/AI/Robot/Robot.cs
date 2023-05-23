@@ -6,16 +6,17 @@ public class Robot : BaseClass
 {
     public Vector2Int Pos;
     public Task currentTask;
+    public int GoBackToHomeAfterNoTask;
+
+    private int goBackToHomeAfterNoTaskCounter;
 
     //References
-    public Robot robot { get; set; }
     public TileGrid tileGrid { get; set; }
     private Tasks tasks;
     private FSM robotState;
 
     public override void OnAwake()
     {
-        robot = GetComponent<Robot>();
         tasks = FindObjectOfType<Tasks>();
         tileGrid = FindObjectOfType<TileGrid>();
     }
@@ -42,11 +43,12 @@ public class Robot : BaseClass
     public void ChooseTask()
     {
         currentTask = null;
-        currentTask = tasks.GetTask();
+        currentTask = tasks.GetPendingTask();
 
         if (currentTask != null)
         {
-            tasks.RemoveTask(currentTask);
+            goBackToHomeAfterNoTaskCounter = 0;
+            tasks.ActivateTask(currentTask);
 
             if (currentTask.TaskActivity == TaskActivity.move)
             {
@@ -59,13 +61,28 @@ public class Robot : BaseClass
         }
         else
         {
-            robotState.SwitchState(typeof(RobotWaitState));
+            if (goBackToHomeAfterNoTaskCounter >= GoBackToHomeAfterNoTask)
+            {
+                currentTask = new Task(TaskActivity.move, new Vector2Int(1, 1));
+                robotState.SwitchState(typeof(RobotMoveState));
+            }
+            else
+            {
+                goBackToHomeAfterNoTaskCounter++;
+                robotState.SwitchState(typeof(RobotWaitState));
+            }
         }
+    }
+
+    public void TaskAccomplished(Task task)
+    {
+        tasks.TaskAccomplished(task);
+        robotState.SwitchState(typeof(RobotWaitState));
     }
 
     public void TaskFailed(Task task)
     {
-        tasks.AddTask(task);
+        tasks.TaskFailed(task);
         robotState.SwitchState(typeof(RobotWaitState));
     }
 

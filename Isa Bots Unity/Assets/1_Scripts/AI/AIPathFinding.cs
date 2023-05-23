@@ -54,7 +54,7 @@ public abstract class AIPathFinding : BaseState
 
     protected virtual void CalcTiles()
     {
-        startTile = robot.tileGrid.GetTile(robot.robot.Pos);
+        startTile = robot.tileGrid.GetTile(robot.Pos);
         targetTile = robot.tileGrid.GetTile(robot.currentTask.Pos);
     }
 
@@ -66,17 +66,16 @@ public abstract class AIPathFinding : BaseState
     protected virtual void LocationReached()
     {
         ClearValues();
-        owner.SwitchState(typeof(RobotWaitState));
+        robot.TaskAccomplished(robot.currentTask);
     }
 
-    protected void TaskFailed()
+    protected virtual void TaskFailed()
     {
-        Debug.Log("Task failed");
         ClearValues();
         robot.TaskFailed(robot.currentTask);
     }
 
-    protected void ClearValues()
+    protected virtual void ClearValues()
     {
         startTile = null;
         targetTile = null;
