@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class TileGrid : BaseClass
 {
@@ -12,7 +11,6 @@ public class TileGrid : BaseClass
     [Header("Terrain Generation")]
     public MainID[] MainGenerationTiles;
     public GroundID[] GroundGenerationTiles;
-    public GameObject Tree;
     public int MainRandomness; //Add randomness in MainGeneration
     public int PerlinMagnification; //The higher the bigger the area's will be
 
@@ -20,12 +18,25 @@ public class TileGrid : BaseClass
     public int ironAmount; 
     public int ironVeinSize;
 
+    [Header("Vegetation")]
+    public int TreeAmount;
+    public int TallGrassAmount;
+    public int FlowersAmount;
+    public int StepsOnGrassToDie;
+
+    [Header("Sprites")]
+    public GameObject SpriteParent;
+    public GameObject TreeSprite;
+    public GameObject TallGrassSprite;
+    public GameObject FlowersSprite;
+    private Dictionary<MainID, GameObject> spriteDictionary = new Dictionary<MainID, GameObject>();
+    private Dictionary<Vector2Int, GameObject> currentSprites = new Dictionary<Vector2Int, GameObject>();
+
     protected Tile[,] gridArray;
 
     //Generation
     private int perlinXOffset;
     private int perlinYOffset;
-    private int totalStoneAmount;
     private int failedGeneration;
 
     //References
@@ -43,6 +54,11 @@ public class TileGrid : BaseClass
         gridArray = new Tile[Width, Height];
         perlinXOffset = UnityEngine.Random.Range(-100000, 100000);
         perlinYOffset = UnityEngine.Random.Range(-100000, 100000);
+
+        //Dictionary's
+        spriteDictionary.Add(MainID.tree, TreeSprite);
+        spriteDictionary.Add(MainID.tallGrass, TallGrassSprite);
+        spriteDictionary.Add(MainID.flowers, FlowersSprite);
 
         GenerateWorld();
         PrintGridSize();
@@ -74,15 +90,29 @@ public class TileGrid : BaseClass
         return null;
     }
 
-    public void SetTile(Vector2Int pos, MainID mainID, GroundID groundID, int temp, bool redraw) 
+    public void SetTile(Vector2Int pos, MainID mainID, GroundID groundID, bool redraw) 
     { 
         if (IsInGridBounds(pos))
         {
             Tile currentTile = GetTile(pos);
 
+            //Remove or add Sprite
+            if (currentTile.MainID != mainID)
+            {
+                if (spriteDictionary.ContainsKey(mainID)) //If new MainID containes a sprite
+                {
+                    spriteDictionary.TryGetValue(mainID, out GameObject newSprite);
+                    AddSprite(newSprite, pos);
+                }
+
+                if (spriteDictionary.ContainsKey(currentTile.MainID)) //If old MainID containes a sprite
+                {
+                    RemoveSprite(pos);
+                }
+            }
+
             currentTile.MainID = mainID;
             currentTile.GroundID = groundID;
-            currentTile.Temp = temp;
 
             if (redraw)
             {
@@ -95,21 +125,7 @@ public class TileGrid : BaseClass
         }
     }
 
-    public void SetTile(Tile currentTile, MainID mainID, GroundID groundID, int temp)
-    {
-        if (IsInGridBounds(currentTile.Pos))
-        {
-            currentTile.MainID = mainID;
-            currentTile.GroundID = groundID;
-            currentTile.Temp = temp;
-        }
-        else
-        {
-            Debug.Log("SetTile Out of Bounds: " + currentTile.Pos.x + ", " + currentTile.Pos.y);
-        }
-    }
-
-    public void SetTiles(Vector2Int pos1, Vector2Int pos2, MainID mainID, GroundID groundID, int temp, bool redraw)
+    public void SetTiles(Vector2Int pos1, Vector2Int pos2, MainID mainID, GroundID groundID, bool redraw)
     {
         if (IsInGridBounds(pos1) && IsInGridBounds(pos2))
         {
@@ -117,7 +133,7 @@ public class TileGrid : BaseClass
             {
                 for (int x = pos1.x; x < pos2.x; x++)
                 {
-                    SetTile(new Vector2Int(x, y), mainID, groundID, temp, false);
+                    SetTile(new Vector2Int(x, y), mainID, groundID, false);
                 }
             }
 
@@ -129,6 +145,18 @@ public class TileGrid : BaseClass
         else
         {
             Debug.Log("SetTiles Out of Bounds: " + pos1.x + ", " + pos1.y + " & " + pos2.x + ", " + pos2.y);
+        }
+    }
+
+    public void AddStepOnTile(Vector2Int pos)
+    {
+        Tile currentTile = GetTile(pos);
+        currentTile.StepCount++;
+
+        if (currentTile.StepCount >= StepsOnGrassToDie && currentTile.GroundID == GroundID.grass)
+        {
+            currentTile.GroundID = GroundID.dirt;
+            RedrawGrid();
         }
     }
 
@@ -154,10 +182,11 @@ public class TileGrid : BaseClass
     private void GenerateWorld()
     {
         GenerateTerrain();
-        GenerateOres();
+
+        GenerateOres(); //SetTile out of bounds??
         GenerateVegetation();
-        
-        SetTiles(new Vector2Int(0, 0), new Vector2Int(10, 10), MainID.none, GroundID.dirt, 0, false); //Clear Starter Area
+
+        SetTiles(new Vector2Int(0, 0), new Vector2Int(10, 10), MainID.none, GroundID.grass, false); //Clear Starter Area
     }
 
 
@@ -169,10 +198,8 @@ public class TileGrid : BaseClass
 
     private void GenerateOres()
     {
-        CalcTotalStoneAmount();
-
         //Iron
-        for (int i = 0; i < NormalizeOreAmount(ironAmount); i++)
+        for (int i = 0; i < NormalizeSpawnAmount(ironAmount); i++)
         {
             SpawnVein(MainID.ironOre, ironVeinSize);
         }
@@ -180,7 +207,29 @@ public class TileGrid : BaseClass
 
     private void GenerateVegetation()
     {
-        //need to implement
+        //Trees
+        for (int i = 0; i < NormalizeSpawnAmount(TreeAmount); i++)
+        {
+            GeneratePlant(MainID.tree, TreeSprite);
+        }
+
+        //TallGrass
+        for (int i = 0; i < NormalizeSpawnAmount(TallGrassAmount); i++)
+        {
+            GeneratePlant(MainID.tallGrass, TallGrassSprite);
+        }
+
+        //Flowers
+        for (int i = 0; i < NormalizeSpawnAmount(FlowersAmount); i++)
+        {
+            GeneratePlant(MainID.flowers, FlowersSprite);
+        }
+    }
+
+    private void GeneratePlant(MainID plant, GameObject prefab)
+    {
+        Tile currentTile = GetRandomTile(true, 1);
+        SetTile(currentTile.Pos, plant, GroundID.grass, false);
     }
 
     private void SpawnVein(MainID id, int veinSize)
@@ -193,7 +242,7 @@ public class TileGrid : BaseClass
             Vector2Int pos1 = new Vector2Int(currentTile.Pos.x - veinSize, currentTile.Pos.y - veinSize);
             Vector2Int pos2 = new Vector2Int(currentTile.Pos.x + veinSize, currentTile.Pos.y + veinSize);
 
-            SetTiles(pos1, pos2, id, currentTile.GroundID, currentTile.Temp, false);
+            SetTiles(pos1, pos2, id, currentTile.GroundID, false);
         }
         else
         {
@@ -201,25 +250,9 @@ public class TileGrid : BaseClass
         }
     }
 
-    private int NormalizeOreAmount(int oreAmount)
+    private int NormalizeSpawnAmount(int spawnAmount)
     {
-        return oreAmount * totalStoneAmount / 1000;
-    }
-
-    private void CalcTotalStoneAmount()
-    {
-        for (int x = 0; x < Width; x++)
-        {
-            for (int y = 0; y < Height; y++)
-            {
-                Tile currentTile = GetTile(new Vector2Int(x, y));
-
-                if (currentTile.MainID == MainID.stone || currentTile.MainID == MainID.stoneWall)
-                {
-                    totalStoneAmount++;
-                }
-            }
-        }
+        return spawnAmount * (Width * Height) / 1000;
     }
 
     private bool CheckTile(int _x, int _y, bool locationMustBeEmpty, int surroundingFreeSpace)
@@ -246,6 +279,22 @@ public class TileGrid : BaseClass
         }
         return true;
     }
+    private void AddSprite(GameObject sprite, Vector2Int pos)
+    {
+        GameObject newSprite = Instantiate(sprite, new Vector3(pos.x, -pos.y, 0), quaternion.identity);
+        newSprite.transform.SetParent(SpriteParent.transform);
+        currentSprites.Add(pos, newSprite);
+    }
+
+    private void RemoveSprite(Vector2Int pos)
+    {
+        if (currentSprites.TryGetValue(pos, out GameObject sprite))
+        {
+            currentSprites.Remove(pos);
+            Destroy(sprite);
+        }
+    }
+
 
     private void GeneratePerlinTerrain()
     {
@@ -253,7 +302,7 @@ public class TileGrid : BaseClass
         {
             for (int x = 0; x < Width; x++)
             {
-                gridArray[x, y] = new Tile(new Vector2Int(x, y), (MainID)GetPerlinMain(x, y, MainGenerationTiles), (GroundID)GetPerlinGround(x, y, GroundGenerationTiles), 0, 0);
+                gridArray[x, y] = new Tile(new Vector2Int(x, y), (MainID)GetPerlinMain(x, y, MainGenerationTiles), GetPerlinGround(x, y, GroundGenerationTiles));
             }
         }
     }
@@ -271,28 +320,29 @@ public class TileGrid : BaseClass
 
                     if (currentTile.MainID == MainID.stone && downTile.MainID == MainID.none)
                     {
-                        currentTile.MainID = MainID.stoneWall;
+                        SetTile(currentTile.Pos, MainID.stoneWall, currentTile.GroundID, false);
                     }
                 }
             }
         }
     }
 
-    private int GetPerlinGround(float x, float y, GroundID[] generationTiles)
+    private MainID GetPerlinMain(float x, float y, MainID[] generationTiles)
     {
         float offsetPerlin = Mathf.PerlinNoise((x + perlinXOffset) / PerlinMagnification, (y + perlinYOffset) / PerlinMagnification); //Generate perlin with offset
         float tileIDPerlin = Mathf.Clamp(offsetPerlin, 0.0f, 1.0f) * generationTiles.Length; //Clamp all values between 0.0 and 1.0 and multiply with tileAmount
         tileIDPerlin = Mathf.Clamp(tileIDPerlin, 0.0f, generationTiles.Length); //Clamp between 0 and tileAmount
-        return Mathf.FloorToInt(tileIDPerlin); //Return int
+        return (MainID)Mathf.FloorToInt(tileIDPerlin); //Return clostest GroundID
     }
 
-    private int GetPerlinMain(float x, float y, MainID[] generationTiles)
+    private GroundID GetPerlinGround(float x, float y, GroundID[] generationTiles)
     {
-        float offsetPerlin = Mathf.PerlinNoise((x + perlinXOffset + UnityEngine.Random.Range(-MainRandomness, MainRandomness)) / (PerlinMagnification - 1), (y + perlinYOffset + UnityEngine.Random.Range(-MainRandomness, MainRandomness)) / (PerlinMagnification - 1)); //Generate perlin with offset
+        float offsetPerlin = Mathf.PerlinNoise((x + perlinXOffset) / PerlinMagnification, (y + perlinYOffset) / PerlinMagnification); //Generate perlin with offset
         float tileIDPerlin = Mathf.Clamp(offsetPerlin, 0.0f, 1.0f) * generationTiles.Length; //Clamp all values between 0.0 and 1.0 and multiply with tileAmount
         tileIDPerlin = Mathf.Clamp(tileIDPerlin, 0.0f, generationTiles.Length); //Clamp between 0 and tileAmount
-        return Mathf.FloorToInt(tileIDPerlin); //Return int
+        return (GroundID)Mathf.FloorToInt(tileIDPerlin); //Return clostest GroundID
     }
+
 
     private void PrintGridSize()
     {

@@ -12,9 +12,9 @@ public class RobotSprite : BaseClass
 
     public override void OnUpdate()
     {
-        if (Vector3.Distance(sprite.transform.position, new Vector3(robot.Pos.x, -robot.Pos.y, -5)) > stopDistance)
+        if (Vector3.Distance(sprite.transform.position, new Vector3(robot.Pos.x, -robot.Pos.y, -2)) > stopDistance)
         {
-            Vector3 newPos = Vector3.Slerp(sprite.transform.position, new Vector3(robot.Pos.x, -robot.Pos.y, -5), slerpAmount);
+            Vector3 newPos = Vector3.Slerp(sprite.transform.position, new Vector3(robot.Pos.x, -robot.Pos.y, -2), slerpAmount);
             sprite.transform.position = newPos;
         }
     }

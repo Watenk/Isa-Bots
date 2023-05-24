@@ -9,11 +9,12 @@ public enum MainID
     ironOre,
     stoneWall,
     tree,
+    tallGrass,
+    flowers,
 }
 
 public enum GroundID 
 {
-    dirt,
     grass,
+    dirt,
 }
-

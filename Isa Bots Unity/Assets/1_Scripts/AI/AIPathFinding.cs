@@ -44,6 +44,7 @@ public abstract class AIPathFinding : BaseState
         if (pathIndex < path.Count)
         {
             robot.SetPos(path[pathIndex].Pos);
+            robot.tileGrid.AddStepOnTile(path[pathIndex].Pos);
             pathIndex++;
         }
         else

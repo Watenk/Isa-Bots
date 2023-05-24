@@ -83,7 +83,7 @@ public class Robot : BaseClass
     public void TaskFailed(Task task)
     {
         tasks.TaskFailed(task);
-        robotState.SwitchState(typeof(RobotWaitState));
+        ChooseTask();
     }
 
     private void UpdateFSM()

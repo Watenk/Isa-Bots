@@ -79,8 +79,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c22088bf976be46b83e03a62a5ac92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowedMainTiles: 00000000
+  allowedMainTiles: 000000000500000006000000
   allowedGroundTiles: 0000000001000000
+  MineParticle: {fileID: 2234892874286063341, guid: 7370ae24b5b69e9479874392e577a6e6, type: 3}
 --- !u!114 &1952811424965934454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4920cf7866bc305488999de512c54fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowedMainTiles: 00000000
+  allowedMainTiles: 000000000500000006000000
   allowedGroundTiles: 0000000001000000
 --- !u!1 &1952811425064344173
 GameObject:
@@ -121,7 +122,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1952811425064344173}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -143,7 +144,7 @@ MonoBehaviour:
   AutoStart: 1
   robot: {fileID: 1952811424965934443}
   sprite: {fileID: 1952811425064344173}
-  slerpAmount: 0.01
+  slerpAmount: 0.03
   stopDistance: 0.3
 --- !u!212 &1952811425064344163
 SpriteRenderer:

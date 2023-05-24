@@ -405,6 +405,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192557592}
   m_Mesh: {fileID: 0}
+--- !u!1 &282976863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 282976864}
+  m_Layer: 0
+  m_Name: Sprites
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &282976864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282976863}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &297986558
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,7 +1338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutoStart: 1
-  RetryFailedTasksTime: 50
+  RetryFailedTasksTime: 5
   activeTaskList: []
   pendingTaskList: []
   failedTasksList: []
@@ -1361,15 +1392,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutoStart: 0
-  Width: 500
-  Height: 500
+  Width: 200
+  Height: 200
   MainGenerationTiles: 0000000001000000
   GroundGenerationTiles: 0000000001000000
-  Tree: {fileID: 0}
   MainRandomness: 1
   PerlinMagnification: 10
   ironAmount: 50
   ironVeinSize: 2
+  TreeAmount: 25
+  TallGrassAmount: 100
+  FlowersAmount: 20
+  StepsOnGrassToDie: 30
+  SpriteParent: {fileID: 282976863}
+  TreeSprite: {fileID: 7987763672848992846, guid: 19b0dae1f8a629145945c190dc2cce13, type: 3}
+  TallGrassSprite: {fileID: 2505848534550547997, guid: d1a636c6af8061e41851e7af7ca51a25, type: 3}
+  FlowersSprite: {fileID: 3022539459564105415, guid: 2491a004387d7654597f02eed8178174, type: 3}
 --- !u!4 &1980822741
 Transform:
   m_ObjectHideFlags: 0

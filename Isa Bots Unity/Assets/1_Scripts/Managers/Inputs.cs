@@ -88,10 +88,7 @@ public class Inputs : BaseClass
             {
                 Tile currentTile = tileGrid.GetTile(inputManager.mousePosGrid);
 
-                if (currentTile.MainID == MainID.none)
-                {
-                    tasks.AddTask(new Task(TaskActivity.move, currentTile.Pos));
-                }
+                tasks.AddTask(new Task(TaskActivity.move, currentTile.Pos));
             }
         }
     }
