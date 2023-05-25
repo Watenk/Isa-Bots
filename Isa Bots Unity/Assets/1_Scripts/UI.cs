@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class UI : BaseClass
 {
+    public GameObject TileSelector;
+
     public Text AverageFrameRate;
     public Text LowestFrame;
 
@@ -47,6 +49,9 @@ public class UI : BaseClass
         {
             Tile currentTile = tileGrid.GetTile(inputManager.mousePosGrid);
 
+            //TileSelector
+            TileSelector.transform.position = new Vector3(inputManager.mousePosGrid.x, -inputManager.mousePosGrid.y, -8);
+
             //ID
             MouseMainID.text = currentTile.MainID.ToString() + " : MainID";
             MouseGroundID.text = currentTile.GroundID.ToString() + " : GroundID";
@@ -54,6 +59,7 @@ public class UI : BaseClass
             //Temp
             string temp = currentTile.Temp.ToString().PadLeft(6);
             MouseTemp.text = temp.Insert(temp.Length - 3, ".") + " : Temp";
+
         }
     }
 
