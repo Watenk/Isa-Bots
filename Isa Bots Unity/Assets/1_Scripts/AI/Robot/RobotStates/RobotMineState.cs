@@ -103,15 +103,18 @@ public class RobotMineState : AIPathFinding
 
     private void TryToCalcPath(Tile currentTile, List<int> directions, int currentDirection)
     {
-        if (currentTile.MainID == MainID.none)
+        if (currentTile != null)
         {
-            path = aStar.CalcPath(startTile, currentTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+            if (currentTile.MainID == MainID.none)
+            {
+                path = aStar.CalcPath(startTile, currentTile, robot.tileGrid, allowedMainTiles, allowedGroundTiles);
+            }
+            else
+            {
+                path = null;
+            }
+            directions.Remove(currentDirection);
         }
-        else
-        {
-            path = null;
-        }
-        directions.Remove(currentDirection);
     }
 
     private void ResetValues()
