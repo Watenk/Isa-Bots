@@ -11,7 +11,7 @@ public class Inputs : BaseClass
 
     private Vector2 referenceMousePos;
 
-    //references
+    //References
     private InputManager inputManager;
     private TileGrid tileGrid;
     private Tasks tasks;
@@ -27,7 +27,6 @@ public class Inputs : BaseClass
     {
         Camera();
         MouseInput();
-        //Overlays();
     }
 
     private void Camera()
@@ -74,10 +73,11 @@ public class Inputs : BaseClass
             if (tileGrid.IsInGridBounds(inputManager.mousePosGrid))
             {
                 Tile currentTile = tileGrid.GetTile(inputManager.mousePosGrid);
-                
-                if (currentTile.MainID != MainID.none)
+                Task mineTask = new Task(TaskActivity.mine, currentTile.Pos);
+
+                if (currentTile.MainID != MainID.none && !IsPosPresentInATask(currentTile.Pos))
                 {
-                    tasks.AddTask(new Task(TaskActivity.mine, currentTile.Pos));
+                    tasks.AddTask(mineTask);
                 }
             }
         }
@@ -93,32 +93,32 @@ public class Inputs : BaseClass
         }
     }
 
-    //private void Overlays()
-    //{
-    //    //TempOverlay
-    //    if (inputManager.F1 == true)
-    //    {
-    //        if (tempRenderer.activeSelf == false)
-    //        {
-    //            tempRenderer.SetActive(true);
-    //        }
-    //        else
-    //        {
-    //            tempRenderer.SetActive(false);
-    //        }
-    //    }
+    private bool IsPosPresentInATask(Vector2Int pos)
+    {
+        for (int i = 0; i < tasks.activeTaskList.Count; i++)
+        {
+            if (tasks.activeTaskList[i].Pos == pos)
+            {
+                return true;
+            }
+        }
 
-    //    //AmountOverlay
-    //    if (inputManager.F2 == true)
-    //    {
-    //        if (amountRenderer.activeSelf == false)
-    //        {
-    //            amountRenderer.SetActive(true);
-    //        }
-    //        else
-    //        {
-    //            amountRenderer.SetActive(false);
-    //        }
-    //    }
-    //}
+        for (int i = 0; i < tasks.pendingTaskList.Count; i++)
+        {
+            if (tasks.pendingTaskList[i].Pos == pos)
+            {
+                return true;
+            }
+        }
+
+        for (int i = 0; i < tasks.failedTasksList.Count; i++)
+        {
+            if (tasks.failedTasksList[i].Pos == pos)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
