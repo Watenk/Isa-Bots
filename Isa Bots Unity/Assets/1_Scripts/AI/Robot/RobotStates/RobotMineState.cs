@@ -60,38 +60,36 @@ public class RobotMineState : AIPathFinding
     {
         //Choose random side
         int trys = 0;
-        for (int i = Random.Range(0, 3); trys < 10; trys++)
+        for (int i = Random.Range(0, 4); trys < 10; trys++)
         {
-            int direction = i;
-
-            if (direction == 0) //up
+            if (i == 0) //up
             {
                 Tile upTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y - 1));
-                TryToCalcPath(upTile,direction);
+                TryToCalcPath(upTile,i);
             }
-            else if (direction == 1) //Right
+            else if (i == 1) //Right
             {
                 Tile rightTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x + 1, targetTile.Pos.y));
-                TryToCalcPath(rightTile, direction);
+                TryToCalcPath(rightTile, i);
             }
-            else if (direction == 2) //Down
+            else if (i == 2) //Down
             {
                 Tile downTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y + 1));
-                TryToCalcPath(downTile, direction);
+                TryToCalcPath(downTile, i);
             }
-            else if (direction == 3) //Left
+            else if (i == 3) //Left
             {
                 Tile leftTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x - 1, targetTile.Pos.y));
-                TryToCalcPath(leftTile, direction);
+                TryToCalcPath(leftTile, i);
             }
 
             if (path != null) // if path is found go out of while loop
             {
-                i = 10;
+                trys = 10;
             }
             else
             {
-                i = Random.Range(0, 3);
+                i = Random.Range(0, 4);
             }
         }
     }
