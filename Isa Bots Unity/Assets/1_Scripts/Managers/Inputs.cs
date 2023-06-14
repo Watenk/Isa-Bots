@@ -141,7 +141,7 @@ public class Inputs : BaseClass
                     {
                         inventory.ironAmount -= 5;
                         inventory.woodAmount -= 2;
-                        inventory.fiberAmount -= 13;
+                        inventory.fiberAmount -= 11;
                         factoryManager.StartProduction(inputManager.mousePosGrid);
                     }
                 }
