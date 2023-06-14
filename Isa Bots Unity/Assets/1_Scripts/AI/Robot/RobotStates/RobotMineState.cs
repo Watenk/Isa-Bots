@@ -22,6 +22,13 @@ public class RobotMineState : AIPathFinding
     private int mineProgress;
     private bool miningComplete;
 
+    private InventoryManager inventory;
+
+    public override void OnAwake()
+    {
+        inventory = FindObjectOfType<InventoryManager>();
+    }
+
     protected override void LocationReached()
     {
         Mine();
@@ -51,40 +58,40 @@ public class RobotMineState : AIPathFinding
 
     protected override void CalcPath()
     {
-        List<int> directions = new List<int>
-        {
-            { 0 }, { 1 }, { 2 }, { 3 }
-        };
-
         //Choose random side
-        while (directions.Count > 0)
+        int trys = 0;
+        for (int i = Random.Range(0, 3); trys < 10; trys++)
         {
-            int direction = directions[Random.Range(0, directions.Count)];
+            int direction = i;
 
             if (direction == 0) //up
             {
                 Tile upTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y - 1));
-                TryToCalcPath(upTile, directions, direction);
+                TryToCalcPath(upTile,direction);
             }
             else if (direction == 1) //Right
             {
                 Tile rightTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x + 1, targetTile.Pos.y));
-                TryToCalcPath(rightTile, directions, direction);
+                TryToCalcPath(rightTile, direction);
             }
             else if (direction == 2) //Down
             {
                 Tile downTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x, targetTile.Pos.y + 1));
-                TryToCalcPath(downTile, directions, direction);
+                TryToCalcPath(downTile, direction);
             }
             else if (direction == 3) //Left
             {
                 Tile leftTile = robot.tileGrid.GetTile(new Vector2Int(targetTile.Pos.x - 1, targetTile.Pos.y));
-                TryToCalcPath(leftTile, directions, direction);
+                TryToCalcPath(leftTile, direction);
             }
 
             if (path != null) // if path is found go out of while loop
             {
-                directions.Clear();
+                i = 10;
+            }
+            else
+            {
+                i = Random.Range(0, 3);
             }
         }
     }
@@ -96,12 +103,14 @@ public class RobotMineState : AIPathFinding
 
         if (mineProgress >= targetMineTime)
         {
+            MainID newResource = robot.tileGrid.GetTile(targetTile.Pos).MainID;
+            inventory.AddResource(newResource);
             robot.tileGrid.SetTile(targetTile.Pos, MainID.none, targetTile.GroundID, true);
             miningComplete = true;
         }
     }
 
-    private void TryToCalcPath(Tile currentTile, List<int> directions, int currentDirection)
+    private void TryToCalcPath(Tile currentTile, int currentDirection)
     {
         if (currentTile != null)
         {
@@ -113,7 +122,6 @@ public class RobotMineState : AIPathFinding
             {
                 path = null;
             }
-            directions.Remove(currentDirection);
         }
     }
 
