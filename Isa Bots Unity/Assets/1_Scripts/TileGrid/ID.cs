@@ -11,6 +11,7 @@ public enum MainID
     tree,
     tallGrass,
     flowers,
+    factory,
 }
 
 public enum GroundID 

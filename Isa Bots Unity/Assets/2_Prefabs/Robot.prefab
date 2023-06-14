@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4920cf7866bc305488999de512c54fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowedMainTiles: 000000000500000006000000
+  allowedMainTiles: 00000000050000000600000007000000
   allowedGroundTiles: 0000000001000000
 --- !u!1 &1952811425064344173
 GameObject:

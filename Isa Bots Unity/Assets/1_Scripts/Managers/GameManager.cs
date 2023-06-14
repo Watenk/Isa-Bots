@@ -10,9 +10,12 @@ public class GameManager : MonoBehaviour
 
     private float upsTimer;
 
-    private void Awake()
+    private void Start()
     {
-        //AutoStart
+        //Settings
+        Application.targetFrameRate = 144;
+        QualitySettings.vSyncCount = 1;
+
         List<BaseClass> baseclassList = new List<BaseClass>();
         baseclassList.AddRange(FindObjectsOfType<BaseClass>());
 
@@ -28,13 +31,6 @@ public class GameManager : MonoBehaviour
         {
             UpdateOrder[i].OnAwake();
         }
-    }
-
-    private void Start()
-    {
-        //Settings
-        Application.targetFrameRate = 144;
-        QualitySettings.vSyncCount = 1;
 
         for (int i = 0; i < UpdateOrder.Count; i++)
         {

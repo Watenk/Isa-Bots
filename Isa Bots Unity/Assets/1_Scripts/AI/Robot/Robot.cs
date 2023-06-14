@@ -25,6 +25,11 @@ public class Robot : BaseClass
     {
         //FSM
         robotState = new FSM(GetComponents<BaseState>());
+        BaseState[] robotStates = GetComponents<BaseState>();
+        for (int i = 0; i < robotStates.Length; i++)
+        {
+            robotStates[i].OnAwake();
+        }
         robotState.SwitchState(typeof(RobotWaitState));
 
         SetPos(new Vector2Int(1, 1));

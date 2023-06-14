@@ -16,6 +16,12 @@ public class UI : BaseClass
     public Text MouseGroundID;
     public Text MouseTemp;
 
+    public Text ironAmount;
+    public Text woodAmount;
+    public Text fiberAmount;
+
+    public Text pendingTasks;
+
     private int frameRateFrameAmount = 30;
     private int averageFPS;
     private int lowestFrame;
@@ -25,11 +31,15 @@ public class UI : BaseClass
     //References
     private InputManager inputManager;
     private TileGrid tileGrid;
+    private InventoryManager inventory;
+    private Tasks tasks;
 
     public override void OnAwake()
     {
         inputManager = FindObjectOfType<InputManager>();
         tileGrid = FindObjectOfType<TileGrid>();
+        inventory = FindObjectOfType<InventoryManager>();
+        tasks = FindObjectOfType<Tasks>();
     }
 
     public override void OnStart()
@@ -60,6 +70,12 @@ public class UI : BaseClass
             string temp = currentTile.Temp.ToString().PadLeft(6);
             MouseTemp.text = temp.Insert(temp.Length - 3, ".") + " : Temp";
 
+            //Inventory
+            ironAmount.text = "Iron: " + inventory.ironAmount;
+            woodAmount.text = "Wood: " + inventory.woodAmount;
+            fiberAmount.text = "Fiber: " + inventory.fiberAmount;
+
+            pendingTasks.text = tasks.activeTaskList.Count + tasks.pendingTaskList.Count + tasks.failedTasksList.Count + " : Pending Tasks";
         }
     }
 

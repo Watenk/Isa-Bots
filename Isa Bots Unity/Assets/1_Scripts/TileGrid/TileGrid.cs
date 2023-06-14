@@ -29,6 +29,7 @@ public class TileGrid : BaseClass
     public GameObject TreeSprite;
     public GameObject TallGrassSprite;
     public GameObject FlowersSprite;
+    public GameObject FactorySprite;
     private Dictionary<MainID, GameObject> spriteDictionary = new Dictionary<MainID, GameObject>();
     private Dictionary<Vector2Int, GameObject> currentSprites = new Dictionary<Vector2Int, GameObject>();
 
@@ -59,6 +60,7 @@ public class TileGrid : BaseClass
         spriteDictionary.Add(MainID.tree, TreeSprite);
         spriteDictionary.Add(MainID.tallGrass, TallGrassSprite);
         spriteDictionary.Add(MainID.flowers, FlowersSprite);
+        spriteDictionary.Add(MainID.factory, FactorySprite);
 
         GenerateWorld();
         PrintGridSize();
@@ -279,6 +281,7 @@ public class TileGrid : BaseClass
         }
         return true;
     }
+
     private void AddSprite(GameObject sprite, Vector2Int pos)
     {
         GameObject newSprite = Instantiate(sprite, new Vector3(pos.x, -pos.y, 0), quaternion.identity);
