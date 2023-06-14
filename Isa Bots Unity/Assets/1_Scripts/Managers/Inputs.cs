@@ -122,10 +122,10 @@ public class Inputs : BaseClass
 
                 if (currentTile.MainID == MainID.none)
                 {
-                    if (inventory.ironAmount >= 3 && inventory.woodAmount >= 8)
+                    if (inventory.ironAmount >= 3 && inventory.woodAmount >= 7)
                     {
                         inventory.ironAmount -= 3;
-                        inventory.woodAmount -= 10;
+                        inventory.woodAmount -= 7;
                         Instantiate(factoryPlacementParticle, new Vector3(currentTile.Pos.x, -currentTile.Pos.y, -5), Quaternion.identity);
                         tileGrid.SetTile(currentTile.Pos, MainID.factory, currentTile.GroundID, true);
                         GameObject newFactoryGameObject = Instantiate(FactoryScript, new Vector3(currentTile.Pos.x, -currentTile.Pos.y, -2), Quaternion.identity);
@@ -137,7 +137,7 @@ public class Inputs : BaseClass
 
                 if (currentTile.MainID == MainID.factory)
                 {
-                    if (inventory.ironAmount >= 5 && inventory.fiberAmount >= 13 && inventory.woodAmount >= 2)
+                    if (inventory.ironAmount >= 5 && inventory.fiberAmount >= 11 && inventory.woodAmount >= 2)
                     {
                         inventory.ironAmount -= 5;
                         inventory.woodAmount -= 2;
